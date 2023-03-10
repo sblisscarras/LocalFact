@@ -1,0 +1,12 @@
+---
+title: "LocalFact Data Analysis"
+author: "Sofia Bliss-Carrascoas"
+date: "3/10/2023"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
