@@ -3,10 +3,123 @@ title: "LocalFact Data Analysis"
 author: "Sofia Bliss-Carrascoas"
 date: "3/10/2023"
 output: pdf_document
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r load packages, warning=FALSE, message=FALSE, echo = FALSE}
+library(tidyverse)
+library(knitr)
+library(tibble)
+library(kableExtra)
+library(lubridate)
+```
+
+```{r color scale and ordering, warning=FALSE, message=FALSE, echo = FALSE }
+LocalFact <- read_csv("midedit data.csv")
+
+LocalFact %>%
+  filter(is.na(State))
+```
+Here are some of the things I've jotted down, if it's helpful:
+number of fact-checks by state
+```{r}
+LocalFact %>%
+  group_by(State) %>%
+  count() %>%
+  kable()
+```
+
+number of fact-checks by fact-checker (organization)
+```{r}
+LocalFact %>%
+  group_by(Organization) %>%
+  count() %>%
+  kable()
+```
+
+number of fact-checks by political/non-political type of claimant
+```{r}
+
+```
+
+number of fact-checks by month of the year
+```{r}
+LocalFact <- LocalFact %>%
+  mutate(Date = mdy(Date))
+
+LocalFact <- LocalFact %>%
+  mutate(Month = months(Date))
+
+LocalFact %>%
+  group_by(Month) %>%
+  count() %>%
+  kable()
+```
+
+number of fact-checks by politician (claimant name + politician as category)
+```{r}
+
+```
+
+number of fact-checks by incumbent seeking re-election (same office held as office sought)
+```{r}
+
+```
+
+number of fact-checks by current officeholder (yes)
+```{r}
+
+```
+
+number of fact-checks by running for office (yes)
+```{r}
+
+```
+
+number of fact-checks by office held
+```{r}
+
+```
+
+number of fact-checks by office sought
+```{r}
+
+```
+
+number of fact-checks by topic
+```{r}
+
+```
+
+number of fact-checks by state and topic
+```{r}
+
+```
+
+number of fact-checks by definitive rating
+```{r}
+
+```
+
+number of fact-checks by source of statement
+```{r}
+
+```
+
+number of fact-checks by fact-check format
+```{r}
+
+```
+
+what percentage had multiple claims?
+```{r}
+
 ```
 
 
