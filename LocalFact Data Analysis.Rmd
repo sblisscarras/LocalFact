@@ -125,7 +125,8 @@ LocalFact %>%
 
 number of fact-checks by topic
 ```{r}
-
+LocalFact %>%
+  filter(is.na(`INDIVIDUAL RECORD`)) 
 ```
 
 number of fact-checks by state and topic
