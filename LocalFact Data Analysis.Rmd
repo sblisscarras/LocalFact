@@ -4,7 +4,7 @@ author: "Sofia Bliss-Carrascoas"
 date: "3/10/2023"
 output: pdf_document
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -20,76 +20,107 @@ library(kableExtra)
 library(lubridate)
 ```
 
-```{r color scale and ordering, warning=FALSE, message=FALSE, echo = FALSE }
-LocalFact <- read_csv("midedit data.csv")
+```{r loaddata, warning=FALSE, message=FALSE, echo = FALSE }
+LocalFact <- read_csv("LocalFactDataCleaned.csv")
 
-LocalFact %>%
-  filter(is.na(State))
-```
-Here are some of the things I've jotted down, if it's helpful:
-number of fact-checks by state
-```{r}
-LocalFact %>%
-  group_by(State) %>%
-  count() %>%
-  kable()
-```
-
-number of fact-checks by fact-checker (organization)
-```{r}
-LocalFact %>%
-  group_by(Organization) %>%
-  count() %>%
-  kable()
-```
-
-number of fact-checks by political/non-political type of claimant
-```{r}
-
-```
-
-number of fact-checks by month of the year
-```{r}
 LocalFact <- LocalFact %>%
   mutate(Date = mdy(Date))
 
 LocalFact <- LocalFact %>%
   mutate(Month = months(Date))
 
+LocalFact$Month <- factor(LocalFact$Month, 
+                              levels = c("January", 
+                                         "February", 
+                                         "March",
+                                         "April",
+                                         "May",
+                                         "June",
+                                         "July",
+                                         "August",
+                                         "September",
+                                         "October",
+                                         "November"))
+```
+Here are some of the things I've jotted down, if it's helpful:
+number of fact-checks by state
+```{r}
+LocalFact %>%
+  group_by(State) %>%
+  count()
+```
+
+number of fact-checks by fact-checker (organization)
+```{r}
+LocalFact %>%
+  group_by(Organization) %>%
+  count()
+```
+
+number of fact-checks by political/non-political type of claimant
+```{r}
+LocalFact %>%
+  group_by(`Type of Claimant`) %>%
+  count()
+```
+
+number of fact-checks by month of the year
+```{r}
 LocalFact %>%
   group_by(Month) %>%
-  count() %>%
-  kable()
+  count()
 ```
 
 number of fact-checks by politician (claimant name + politician as category)
 ```{r}
-
+LocalFact %>%
+  filter(`Political Designation` == "Politician") %>%
+  group_by(`Claimant Name // (Claim Source?)`) %>%
+  count() %>%
+  arrange(desc(n))
 ```
 
 number of fact-checks by incumbent seeking re-election (same office held as office sought)
 ```{r}
-
+LocalFact %>%
+  filter(`Aspiring Position` == `Current Position`) %>%
+  group_by(`Claimant Name // (Claim Source?)`) %>%
+  count() %>%
+  arrange(desc(n))
 ```
 
 number of fact-checks by current officeholder (yes)
 ```{r}
-
+LocalFact %>%
+  filter(`Current Officeholder?` == "Yes") %>%
+  group_by(`Claimant Name // (Claim Source?)`) %>%
+  count() %>%
+  arrange(desc(n))
 ```
 
 number of fact-checks by running for office (yes)
 ```{r}
-
+LocalFact %>%
+  filter(`Running for Office?` == "Yes") %>%
+  group_by(`Claimant Name // (Claim Source?)`) %>%
+  count() %>%
+  arrange(desc(n))
 ```
 
 number of fact-checks by office held
 ```{r}
-
+LocalFact %>%
+  group_by(`Current Position`) %>%
+  count() %>%
+  arrange(desc(n))
 ```
 
 number of fact-checks by office sought
 ```{r}
-
+LocalFact %>%
+  group_by(`Aspiring Position`) %>%
+  count() %>%
+  arrange(desc(n))
 ```
 
 number of fact-checks by topic
