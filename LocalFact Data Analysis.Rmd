@@ -21,7 +21,7 @@ library(lubridate)
 ```
 
 ```{r loaddata, warning=FALSE, message=FALSE, echo = FALSE }
-LocalFact <- read_csv("LocalFactDataCleaned.csv")
+LocalFact <- read_csv("LocalFactDataCleaned-csv.csv")
 
 LocalFact <- LocalFact %>%
   mutate(Date = mdy(Date))
@@ -126,7 +126,7 @@ LocalFact %>%
 number of fact-checks by topic
 ```{r}
 LocalFact %>%
-  filter(is.na(`INDIVIDUAL RECORD`)) 
+  rowSums(`INDIVIDUAL RECORD`) 
 ```
 
 number of fact-checks by state and topic
