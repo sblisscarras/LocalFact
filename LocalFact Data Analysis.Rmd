@@ -18,6 +18,7 @@ library(knitr)
 library(tibble)
 library(kableExtra)
 library(lubridate)
+library(ggplot2)
 ```
 
 ```{r loaddata, warning=FALSE, message=FALSE, echo = FALSE }
@@ -42,143 +43,171 @@ LocalFact$Month <- factor(LocalFact$Month,
                                          "October",
                                          "November"))
 ```
-Here are some of the things I've jotted down, if it's helpful:
-number of fact-checks by state
+Basic Queries:
+number of total checked claims
 ```{r}
 LocalFact %>%
+  count()
+```
+
+number of unique fact-checks published
+```{r}
+LocalFact %>%
+  distinct(`Fact-Check URL`) %>%
+  count()
+```
+
+number of fact-checks by state
+```{r state, warning=FALSE, message=FALSE, echo = FALSE}
+LocalFact %>%
   group_by(State) %>%
-  count() %>%
-  kable()
+  count()
 ```
 
 number of fact-checks by fact-checker (organization)
-```{r}
+```{r org, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   group_by(Organization) %>%
   count() %>%
-  kable()
+  arrange(desc(n))
 ```
 
 number of fact-checks by political/non-political type of claimant
-```{r}
+```{r type, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   group_by(`Type of Claimant`) %>%
-  count() %>%
-  kable()
+  count() 
 ```
 
 number of fact-checks by month of the year
-```{r}
+```{r month, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   group_by(Month) %>%
-  count() %>%
-  kable()
+  count()
 ```
 
 number of fact-checks by politician (claimant name + politician as category)
-```{r}
+```{r pol, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   filter(`Political Designation` == "Politician") %>%
   group_by(`Claimant Name // (Claim Source?)`) %>%
   count() %>%
-  arrange(desc(n)) %>%
-  print(50) %>%
-  kable()
+  arrange(desc(n))
 ```
 
 number of fact-checks by incumbent seeking re-election (same office held as office sought)
-```{r}
+```{r incumbent, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   filter(`Aspiring Position` == `Current Position`) %>%
   group_by(`Claimant Name // (Claim Source?)`) %>%
   count() %>%
-  arrange(desc(n)) %>%
-  print(50) %>%
-  kable()
+  arrange(desc(n))
 ```
 
 number of fact-checks by current officeholder (yes)
-```{r}
+```{r officeholder, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   filter(`Current Officeholder?` == "Yes") %>%
   group_by(`Claimant Name // (Claim Source?)`) %>%
   count() %>%
-  arrange(desc(n)) %>%
-  print(50) %>%
-  kable()
+  arrange(desc(n))
 ```
 
 number of fact-checks by running for office (yes)
-```{r}
+```{r candidate, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   filter(`Running for Office?` == "Yes") %>%
   group_by(`Claimant Name // (Claim Source?)`) %>%
   count() %>%
-  arrange(desc(n)) %>%
-  print(50) %>%
-  kable()
+  arrange(desc(n))
 ```
 
 number of fact-checks by office held
-```{r}
+```{r office, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   group_by(`Current Position`) %>%
   count() %>%
-  arrange(desc(n)) %>%
-  print(50) %>%
-  kable()
+  arrange(desc(n))
 ```
 
 number of fact-checks by office sought
-```{r}
+```{r officesought, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   group_by(`Aspiring Position`) %>%
   count() %>%
-  arrange(desc(n)) %>%
-  print(50) %>%
-  kable()
+  arrange(desc(n))
 ```
 
 number of fact-checks by topic
-```{r}
-# `INDIVIDUAL RECORD` <- sum(LocalFact$`INDIVIDUAL RECORD`)
-# `ECONOMIC ISSUES` <- sum(LocalFact$`ECONOMIC ISSUES`)
-# `GOVERNMENT OPERATIONS` <- sum(LocalFact$`GOVERNMENT OPERATIONS`)
-# `VOTING/ELECTIONS` <- sum(LocalFact$`VOTING/ELECTIONS`)
-# `CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES` <- sum(LocalFact$`CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES`)
-# `IMMIGRATION AND REFUGEE ISSUES` <- sum(LocalFact$`IMMIGRATION AND REFUGEE ISSUES`)
-# `LGBTQ` <- sum(LocalFact$`LGBTQ`)
-# `RACE` <- sum(LocalFact$`RACE`)
-# `RELIGION` <- sum(LocalFact$`RELIGION`)
-# `` <- sum(LocalFact$``)
-# 
-# 
-# LocalFactTags <- cbind(`INDIVIDUAL RECORD`, 
-#                        `ECONOMIC ISSUES`, 
-#                        `GOVERNMENT OPERATIONS`,
-#                        `VOTING/ELECTIONS`,
-#                        `CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES`,
-#                        `IMMIGRATION AND REFUGEE ISSUES`,
-#                        `LGBTQ`,
-#                        `RACE`,
-#                        `RELIGION`)
-
+```{r topictag, warning=FALSE, message=FALSE, echo = FALSE}
+TOPICTAGS <- LocalFact %>%
+  summarise(`INDIVIDUAL RECORD` = sum(`INDIVIDUAL RECORD`),
+            `ECONOMIC ISSUES` = sum(`ECONOMIC ISSUES`),
+            `GOVERNMENT OPERATIONS` = sum(`GOVERNMENT OPERATIONS`),
+            `VOTING/ELECTIONS` = sum(`VOTING/ELECTIONS`),
+            `CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES` = sum(`CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES`),
+            `IMMIGRATION AND REFUGEE ISSUES` = sum(`IMMIGRATION AND REFUGEE ISSUES`),
+            `LGBTQ` = sum(`LGBTQ`),
+            `RACE` = sum(`RACE`),
+            `RELIGION` = sum(`RELIGION`),
+            `SOCIAL WELFARE` = sum(`SOCIAL WELFARE`),
+            `EDUCATION` = sum(`EDUCATION`),
+            `ABORTION/WOMEN` = sum(`ABORTION/WOMEN`),
+            `HEALTH` = sum(`HEALTH`),
+            `LAW AND CRIME AND POLICING` = sum(`LAW AND CRIME AND POLICING`),
+            `GUNS` = sum(`GUNS`),
+            `HISTORY` = sum(`HISTORY`),
+            `LEGISLATION` = sum(`LEGISLATION`),
+            `AGRICULTURE` = sum(`AGRICULTURE`),
+            `ENERGY AND ENVIRONMENT` = sum(`ENERGY AND ENVIRONMENT`),
+            `COMMUNITY DEVELOPMENT AND HOUSING` = sum(`COMMUNITY DEVELOPMENT AND HOUSING`),
+            `TECHNOLOGY SCIENCE SPACE` = sum(`TECHNOLOGY SCIENCE SPACE`),
+            `MEDIA AND COMMUNICATIONS` = sum(`MEDIA AND COMMUNICATIONS`))
+TOPICTAGS <- t(TOPICTAGS)
+TOPICTAGS <- as.data.frame(TOPICTAGS)
+TOPICTAGS %>%
+  arrange(desc(V1))
 ```
 
 number of fact-checks by state and topic
-```{r}
+```{r statetopic, warning=FALSE, message=FALSE, echo = FALSE}
+STATETOPICTAGS <- LocalFact %>%
+  group_by(State) %>%
+  summarise(`INDIVIDUAL RECORD` = sum(`INDIVIDUAL RECORD`),
+            `ECONOMIC ISSUES` = sum(`ECONOMIC ISSUES`),
+            `GOVERNMENT OPERATIONS` = sum(`GOVERNMENT OPERATIONS`),
+            `VOTING/ELECTIONS` = sum(`VOTING/ELECTIONS`),
+            `CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES` = sum(`CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES`),
+            `IMMIGRATION AND REFUGEE ISSUES` = sum(`IMMIGRATION AND REFUGEE ISSUES`),
+            `LGBTQ` = sum(`LGBTQ`),
+            `RACE` = sum(`RACE`),
+            `RELIGION` = sum(`RELIGION`),
+            `SOCIAL WELFARE` = sum(`SOCIAL WELFARE`),
+            `EDUCATION` = sum(`EDUCATION`),
+            `ABORTION/WOMEN` = sum(`ABORTION/WOMEN`),
+            `HEALTH` = sum(`HEALTH`),
+            `LAW AND CRIME AND POLICING` = sum(`LAW AND CRIME AND POLICING`),
+            `GUNS` = sum(`GUNS`),
+            `HISTORY` = sum(`HISTORY`),
+            `LEGISLATION` = sum(`LEGISLATION`),
+            `AGRICULTURE` = sum(`AGRICULTURE`),
+            `ENERGY AND ENVIRONMENT` = sum(`ENERGY AND ENVIRONMENT`),
+            `COMMUNITY DEVELOPMENT AND HOUSING` = sum(`COMMUNITY DEVELOPMENT AND HOUSING`),
+            `TECHNOLOGY SCIENCE SPACE` = sum(`TECHNOLOGY SCIENCE SPACE`),
+            `MEDIA AND COMMUNICATIONS` = sum(`MEDIA AND COMMUNICATIONS`))
 
+STATETOPICTAGS
 ```
 
 number of fact-checks by definitive rating
-```{r}
+```{r defrating, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   group_by(`Was a Definitive Rating Given?`) %>%
   count()
 ```
 
 number of fact-checks by source of statement
-```{r}
+```{r source, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   group_by(`Source of Statement`) %>%
   count() %>%
@@ -186,7 +215,7 @@ LocalFact %>%
 ```
 
 number of fact-checks by fact-check format
-```{r}
+```{r format, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   group_by(`Fact-Check Format`) %>%
   count() %>%
@@ -194,7 +223,7 @@ LocalFact %>%
 ```
 
 what percentage had multiple claims?
-```{r}
+```{r splits, warning=FALSE, message=FALSE, echo = FALSE}
 uniqueclaims <- LocalFact %>%
   distinct(`Fact-Check URL`) %>%
   count()
@@ -204,6 +233,8 @@ splitclaims <- LocalFact %>%
   count()
 
 splitclaims/uniqueclaims*100
+
+
 ```
 
 
