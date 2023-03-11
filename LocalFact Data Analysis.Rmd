@@ -165,8 +165,11 @@ TOPICTAGS <- LocalFact %>%
             `MEDIA AND COMMUNICATIONS` = sum(`MEDIA AND COMMUNICATIONS`))
 TOPICTAGS <- t(TOPICTAGS)
 TOPICTAGS <- as.data.frame(TOPICTAGS)
+TOPICTAGS$Tag <- rownames(TOPICTAGS)
 TOPICTAGS %>%
   arrange(desc(V1))
+
+write.csv(TOPICTAGS, "LocalFactTopicTags.csv", row.names=FALSE)
 ```
 
 number of fact-checks by state and topic
@@ -197,6 +200,8 @@ STATETOPICTAGS <- LocalFact %>%
             `MEDIA AND COMMUNICATIONS` = sum(`MEDIA AND COMMUNICATIONS`))
 
 STATETOPICTAGS
+write.csv(STATETOPICTAGS, "LocalFactSTATETopicTags.csv", row.names=FALSE)
+
 ```
 
 number of fact-checks by definitive rating
