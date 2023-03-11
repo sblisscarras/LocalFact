@@ -125,8 +125,28 @@ LocalFact %>%
 
 number of fact-checks by topic
 ```{r}
-LocalFact %>%
-  rowSums(`INDIVIDUAL RECORD`) 
+# `INDIVIDUAL RECORD` <- sum(LocalFact$`INDIVIDUAL RECORD`)
+# `ECONOMIC ISSUES` <- sum(LocalFact$`ECONOMIC ISSUES`)
+# `GOVERNMENT OPERATIONS` <- sum(LocalFact$`GOVERNMENT OPERATIONS`)
+# `VOTING/ELECTIONS` <- sum(LocalFact$`VOTING/ELECTIONS`)
+# `CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES` <- sum(LocalFact$`CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES`)
+# `IMMIGRATION AND REFUGEE ISSUES` <- sum(LocalFact$`IMMIGRATION AND REFUGEE ISSUES`)
+# `LGBTQ` <- sum(LocalFact$`LGBTQ`)
+# `RACE` <- sum(LocalFact$`RACE`)
+# `RELIGION` <- sum(LocalFact$`RELIGION`)
+# `` <- sum(LocalFact$``)
+# 
+# 
+# LocalFactTags <- cbind(`INDIVIDUAL RECORD`, 
+#                        `ECONOMIC ISSUES`, 
+#                        `GOVERNMENT OPERATIONS`,
+#                        `VOTING/ELECTIONS`,
+#                        `CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES`,
+#                        `IMMIGRATION AND REFUGEE ISSUES`,
+#                        `LGBTQ`,
+#                        `RACE`,
+#                        `RELIGION`)
+
 ```
 
 number of fact-checks by state and topic
@@ -136,22 +156,38 @@ number of fact-checks by state and topic
 
 number of fact-checks by definitive rating
 ```{r}
-
+LocalFact %>%
+  group_by(`Was a Definitive Rating Given?`) %>%
+  count()
 ```
 
 number of fact-checks by source of statement
 ```{r}
-
+LocalFact %>%
+  group_by(`Source of Statement`) %>%
+  count() %>%
+  arrange(desc(n))
 ```
 
 number of fact-checks by fact-check format
 ```{r}
-
+LocalFact %>%
+  group_by(`Fact-Check Format`) %>%
+  count() %>%
+  arrange(desc(n))
 ```
 
 what percentage had multiple claims?
 ```{r}
+uniqueclaims <- LocalFact %>%
+  distinct(`Fact-Check URL`) %>%
+  count()
 
+splitclaims <- LocalFact %>%
+  filter(`Multiple claims?` == "A") %>%
+  count()
+
+splitclaims/uniqueclaims*100
 ```
 
 
