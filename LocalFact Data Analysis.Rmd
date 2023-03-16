@@ -120,13 +120,12 @@ Politician %>%
        x = "Total Number of Fact Checks per Politician")
 ```
 
-number of fact-checks by re-occuring non-political type of claimant
+number of fact-checks by re-occurring non-political types of claimant
 ```{r type, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   filter(`Claimant Name // (Claim Source?)` == "Viewer question" | 
            `Claimant Name // (Claim Source?)` == "You may have heard..." |
-           `Claimant Name // (Claim Source?)` == "Unknown social media user(s)" | 
-           `Claimant Name // (Claim Source?)` == "Unknown social media user") %>%
+           `Claimant Name // (Claim Source?)` == "Unknown social media user(s)") %>%
   group_by(`Claimant Name // (Claim Source?)`) %>%
   count() 
 ```
@@ -161,6 +160,7 @@ LocalFact %>%
 number of fact-checks by office held
 ```{r office, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
+  filter(!is.na(`Current Position`)) %>%
   group_by(`Current Position`) %>%
   count() %>%
   arrange(desc(n))
@@ -169,6 +169,7 @@ LocalFact %>%
 number of fact-checks by office sought
 ```{r officesought, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
+  filter(!is.na(`Aspiring Position`)) %>%
   group_by(`Aspiring Position`) %>%
   count() %>%
   arrange(desc(n))
@@ -199,13 +200,13 @@ TOPICTAGS <- LocalFact %>%
             `COMMUNITY DEVELOPMENT AND HOUSING` = sum(`COMMUNITY DEVELOPMENT AND HOUSING`),
             `TECHNOLOGY SCIENCE SPACE` = sum(`TECHNOLOGY SCIENCE SPACE`),
             `MEDIA AND COMMUNICATIONS` = sum(`MEDIA AND COMMUNICATIONS`))
-TOPICTAGS <- t(TOPICTAGS)
-TOPICTAGS <- as.data.frame(TOPICTAGS)
-TOPICTAGS$Tag <- rownames(TOPICTAGS)
-TOPICTAGS %>%
+DATATOPICTAGS <- t(TOPICTAGS)
+DATATOPICTAGS <- as.data.frame(DATATOPICTAGS)
+DATATOPICTAGS$Tag <- rownames(DATATOPICTAGS)
+DATATOPICTAGS %>%
   arrange(desc(V1))
 
-write.csv(TOPICTAGS, "LocalFactTopicTags.csv", row.names=FALSE)
+write.csv(DATATOPICTAGS, "LocalFactTopicTags.csv", row.names=FALSE)
 ```
 
 number of fact-checks by state and topic
@@ -238,6 +239,71 @@ STATETOPICTAGS <- LocalFact %>%
 STATETOPICTAGS
 write.csv(STATETOPICTAGS, "LocalFactSTATETopicTags.csv", row.names=FALSE)
 
+```
+
+number of fact-checks by state and topic
+```{r statetopic, warning=FALSE, message=FALSE, echo = FALSE}
+POLITICIANTOPICTAGS <- LocalFact %>%
+  filter(`Political Designation` == "Politician") %>%
+  summarise(`INDIVIDUAL RECORD` = sum(`INDIVIDUAL RECORD`),
+            `ECONOMIC ISSUES` = sum(`ECONOMIC ISSUES`),
+            `GOVERNMENT OPERATIONS` = sum(`GOVERNMENT OPERATIONS`),
+            `VOTING/ELECTIONS` = sum(`VOTING/ELECTIONS`),
+            `CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES` = sum(`CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES`),
+            `IMMIGRATION AND REFUGEE ISSUES` = sum(`IMMIGRATION AND REFUGEE ISSUES`),
+            `LGBTQ` = sum(`LGBTQ`),
+            `RACE` = sum(`RACE`),
+            `RELIGION` = sum(`RELIGION`),
+            `SOCIAL WELFARE` = sum(`SOCIAL WELFARE`),
+            `EDUCATION` = sum(`EDUCATION`),
+            `ABORTION/WOMEN` = sum(`ABORTION/WOMEN`),
+            `HEALTH` = sum(`HEALTH`),
+            `LAW AND CRIME AND POLICING` = sum(`LAW AND CRIME AND POLICING`),
+            `GUNS` = sum(`GUNS`),
+            `HISTORY` = sum(`HISTORY`),
+            `LEGISLATION` = sum(`LEGISLATION`),
+            `AGRICULTURE` = sum(`AGRICULTURE`),
+            `ENERGY AND ENVIRONMENT` = sum(`ENERGY AND ENVIRONMENT`),
+            `COMMUNITY DEVELOPMENT AND HOUSING` = sum(`COMMUNITY DEVELOPMENT AND HOUSING`),
+            `TECHNOLOGY SCIENCE SPACE` = sum(`TECHNOLOGY SCIENCE SPACE`),
+            `MEDIA AND COMMUNICATIONS` = sum(`MEDIA AND COMMUNICATIONS`))
+
+POLITICIANTOPICTAGS$`Subset of Data` <- "Politician"
+
+POLITICALORGTOPICTAGS <- LocalFact %>%
+  filter(`Political Designation` == "Political organization") %>%
+  summarise(`INDIVIDUAL RECORD` = sum(`INDIVIDUAL RECORD`),
+            `ECONOMIC ISSUES` = sum(`ECONOMIC ISSUES`),
+            `GOVERNMENT OPERATIONS` = sum(`GOVERNMENT OPERATIONS`),
+            `VOTING/ELECTIONS` = sum(`VOTING/ELECTIONS`),
+            `CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES` = sum(`CIVIL RIGHTS MINORITY ISSUES AND CIVIL LIBERTIES`),
+            `IMMIGRATION AND REFUGEE ISSUES` = sum(`IMMIGRATION AND REFUGEE ISSUES`),
+            `LGBTQ` = sum(`LGBTQ`),
+            `RACE` = sum(`RACE`),
+            `RELIGION` = sum(`RELIGION`),
+            `SOCIAL WELFARE` = sum(`SOCIAL WELFARE`),
+            `EDUCATION` = sum(`EDUCATION`),
+            `ABORTION/WOMEN` = sum(`ABORTION/WOMEN`),
+            `HEALTH` = sum(`HEALTH`),
+            `LAW AND CRIME AND POLICING` = sum(`LAW AND CRIME AND POLICING`),
+            `GUNS` = sum(`GUNS`),
+            `HISTORY` = sum(`HISTORY`),
+            `LEGISLATION` = sum(`LEGISLATION`),
+            `AGRICULTURE` = sum(`AGRICULTURE`),
+            `ENERGY AND ENVIRONMENT` = sum(`ENERGY AND ENVIRONMENT`),
+            `COMMUNITY DEVELOPMENT AND HOUSING` = sum(`COMMUNITY DEVELOPMENT AND HOUSING`),
+            `TECHNOLOGY SCIENCE SPACE` = sum(`TECHNOLOGY SCIENCE SPACE`),
+            `MEDIA AND COMMUNICATIONS` = sum(`MEDIA AND COMMUNICATIONS`))
+
+POLITICALORGTOPICTAGS$`Subset of Data` <- "Political organization"
+
+GENTOPICTAGS <- TOPICTAGS
+
+GENTOPICTAGS$`Subset of Data` <- "All Data"
+
+COMPARETOPICTAGS <- full_join(POLITICIANTOPICTAGS, POLITICALORGTOPICTAGS, match = all)
+
+COMPARETOPICTAGS <- full_join(COMPARETOPICTAGS, GENTOPICTAGS, match = all)
 ```
 
 number of fact-checks by definitive rating
