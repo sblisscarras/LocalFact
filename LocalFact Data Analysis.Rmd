@@ -66,10 +66,21 @@ LocalFact %>%
 
 number of fact-checks by fact-checker (organization)
 ```{r org, warning=FALSE, message=FALSE, echo = FALSE}
-LocalFact %>%
+OrgCount <- LocalFact %>%
   group_by(Organization) %>%
-  count() %>%
+  count()
+
+OrgCount %>%
   arrange(desc(n))
+
+OrgCount %>%
+  summary(n)
+
+OrgCount %>%
+  ggplot(aes(x = n)) + 
+  geom_boxplot() +
+  labs(title = "Frequency of Output by Organization",
+       x = "Total Number of Fact Checks")
 ```
 
 number of fact-checks by political/non-political type of claimant
@@ -83,16 +94,41 @@ number of fact-checks by month of the year
 ```{r month, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   group_by(Month) %>%
-  count()
+  count() %>%
+  ggplot(aes(x = Month, y = n)) +
+  geom_point() +
+  labs(title = "Number of Fact-Checked Claims by Month", y = "Count")
 ```
 
 number of fact-checks by politician (claimant name + politician as category)
 ```{r pol, warning=FALSE, message=FALSE, echo = FALSE}
-LocalFact %>%
+Politician <- LocalFact %>%
   filter(`Political Designation` == "Politician") %>%
   group_by(`Claimant Name // (Claim Source?)`) %>%
-  count() %>%
+  count()
+
+Politician %>%
   arrange(desc(n))
+
+Politician %>%
+  summary(n)
+
+Politician %>%
+  ggplot(aes(x = n)) + 
+  geom_boxplot() +
+  labs(title = "How much were politicians singled out?",
+       x = "Total Number of Fact Checks per Politician")
+```
+
+number of fact-checks by re-occuring non-political type of claimant
+```{r type, warning=FALSE, message=FALSE, echo = FALSE}
+LocalFact %>%
+  filter(`Claimant Name // (Claim Source?)` == "Viewer question" | 
+           `Claimant Name // (Claim Source?)` == "You may have heard..." |
+           `Claimant Name // (Claim Source?)` == "Unknown social media user(s)" | 
+           `Claimant Name // (Claim Source?)` == "Unknown social media user") %>%
+  group_by(`Claimant Name // (Claim Source?)`) %>%
+  count() 
 ```
 
 number of fact-checks by incumbent seeking re-election (same office held as office sought)
