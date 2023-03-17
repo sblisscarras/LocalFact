@@ -304,6 +304,8 @@ GENTOPICTAGS$`Subset of Data` <- "All Data"
 COMPARETOPICTAGS <- full_join(POLITICIANTOPICTAGS, POLITICALORGTOPICTAGS, match = all)
 
 COMPARETOPICTAGS <- full_join(COMPARETOPICTAGS, GENTOPICTAGS, match = all)
+
+COMPARETOPICTAGS
 ```
 
 number of fact-checks by definitive rating
