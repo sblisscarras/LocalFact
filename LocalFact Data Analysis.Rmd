@@ -121,7 +121,7 @@ Politician %>%
 ```
 
 number of fact-checks by re-occurring non-political types of claimant
-```{r type, warning=FALSE, message=FALSE, echo = FALSE}
+```{r nonpoltype, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   filter(`Claimant Name // (Claim Source?)` == "Viewer question" | 
            `Claimant Name // (Claim Source?)` == "You may have heard..." |
@@ -242,7 +242,7 @@ write.csv(STATETOPICTAGS, "LocalFactSTATETopicTags.csv", row.names=FALSE)
 ```
 
 number of fact-checks by state and topic
-```{r statetopic, warning=FALSE, message=FALSE, echo = FALSE}
+```{r poltopic, warning=FALSE, message=FALSE, echo = FALSE}
 POLITICIANTOPICTAGS <- LocalFact %>%
   filter(`Political Designation` == "Politician") %>%
   summarise(`INDIVIDUAL RECORD` = sum(`INDIVIDUAL RECORD`),
