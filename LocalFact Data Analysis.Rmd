@@ -338,6 +338,15 @@ LocalFact %>%
   arrange(desc(n))
 ```
 
+number of distinctfact-checks by fact-check format
+```{r distinctformat, warning=FALSE, message=FALSE, echo = FALSE}
+LocalFact %>%
+  distinct(`Fact-Check URL`, .keep_all = TRUE) %>%
+  group_by(`Fact-Check Format`) %>%
+  count() %>%
+  arrange(desc(n))
+```
+
 what percentage had multiple claims?
 ```{r splits, warning=FALSE, message=FALSE, echo = FALSE}
 uniqueclaims <- LocalFact %>%
