@@ -94,6 +94,10 @@ number of fact-checks by month of the year
 ```{r month, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   group_by(Month) %>%
+  count()
+
+LocalFact %>%
+  group_by(Month) %>%
   count() %>%
   ggplot(aes(x = Month, y = n)) +
   geom_point() +
@@ -306,6 +310,9 @@ COMPARETOPICTAGS <- full_join(POLITICIANTOPICTAGS, POLITICALORGTOPICTAGS, match 
 COMPARETOPICTAGS <- full_join(COMPARETOPICTAGS, GENTOPICTAGS, match = all)
 
 COMPARETOPICTAGS
+
+write.csv(COMPARETOPICTAGS, "LocalFactCOMPARETopicTags.csv", row.names=FALSE)
+
 ```
 
 number of fact-checks by definitive rating
