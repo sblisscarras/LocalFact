@@ -45,13 +45,13 @@ LocalFact$Month <- factor(LocalFact$Month,
 ```
 Basic Queries:
 number of total checked claims
-```{r}
+```{r count, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   count()
 ```
 
 number of unique fact-checks published
-```{r}
+```{r distincturl, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
   distinct(`Fact-Check URL`) %>%
   count()
@@ -63,6 +63,8 @@ LocalFact %>%
   group_by(State) %>%
   count()
 ```
+
+\newpage
 
 number of fact-checks by fact-checker (organization)
 ```{r org, warning=FALSE, message=FALSE, echo = FALSE}
@@ -90,6 +92,8 @@ LocalFact %>%
   count() 
 ```
 
+\newpage
+
 number of fact-checks by month of the year
 ```{r month, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
@@ -103,6 +107,8 @@ LocalFact %>%
   geom_point() +
   labs(title = "Number of Fact-Checked Claims by Month", y = "Count")
 ```
+
+\newpage
 
 number of fact-checks by politician (claimant name + politician as category)
 ```{r pol, warning=FALSE, message=FALSE, echo = FALSE}
@@ -124,6 +130,8 @@ Politician %>%
        x = "Total Number of Fact Checks per Politician")
 ```
 
+\newpage
+
 number of fact-checks by re-occurring non-political types of claimant
 ```{r nonpoltype, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
@@ -143,6 +151,8 @@ LocalFact %>%
   arrange(desc(n))
 ```
 
+\newpage
+
 number of fact-checks by current officeholder (yes)
 ```{r officeholder, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
@@ -161,6 +171,8 @@ LocalFact %>%
   arrange(desc(n))
 ```
 
+\newpage
+
 number of fact-checks by office held
 ```{r office, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
@@ -178,6 +190,8 @@ LocalFact %>%
   count() %>%
   arrange(desc(n))
 ```
+
+\newpage
 
 number of fact-checks by topic
 ```{r topictag, warning=FALSE, message=FALSE, echo = FALSE}
@@ -315,6 +329,8 @@ write.csv(COMPARETOPICTAGS, "LocalFactCOMPARETopicTags.csv", row.names=FALSE)
 
 ```
 
+\newpage
+
 number of fact-checks by definitive rating
 ```{r defrating, warning=FALSE, message=FALSE, echo = FALSE}
 LocalFact %>%
@@ -358,8 +374,6 @@ splitclaims <- LocalFact %>%
   count()
 
 splitclaims/uniqueclaims*100
-
-
 ```
 
 
